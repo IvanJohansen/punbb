@@ -445,13 +445,13 @@ if ($action == 'feed')
 
 		// Fetch $show topics
 		$query = array(
-			'SELECT'	=> 't.id, t.poster, t.posted, t.subject, p.message, p.hide_smilies, u.email_setting, u.email, p.poster_id, p.poster_email',
-			'FROM'		=> 'topics AS t',
-			'JOINS'		=> array(
+         'SELECT' => 't.id, p.poster, t.subject, t.last_post, t.last_poster, p.message, p.hide_smilies, u.email_setting, u.email, p.poster_id, p.poster_email, p.posted, p.id',
+         'FROM'      => 'posts AS p',
+         'JOINS'     => array(
 				array(
-					'INNER JOIN'	=> 'posts AS p',
-					'ON'			=> 'p.id = t.first_post_id'
-				),
+               'INNER JOIN'   => 'topics AS t',
+               'ON'        => 't.id=p.topic_id'
+            ),
 				array(
 					'INNER JOIN'	=> 'users AS u',
 					'ON'			=> 'u.id = p.poster_id'
@@ -462,8 +462,8 @@ if ($action == 'feed')
 				)
 			),
 			'WHERE'		=> '(fp.read_forum IS NULL OR fp.read_forum = 1) AND t.moved_to IS NULL',
-			'ORDER BY'	=> (($sort_by == 'last_post') ? 't.last_post' : 't.posted').' DESC',
-			'LIMIT'		=> $show
+         'ORDER BY'  => 'p.posted DESC',
+         'LIMIT'     => $show
 		);
 
 		if (isset($forum_sql))
@@ -484,8 +484,8 @@ if ($action == 'feed')
 			$item = array(
 				'id'			=>	$cur_topic['id'],
 				'title'			=>	$cur_topic['subject'],
-				'link'			=>	forum_link($forum_url['topic_new_posts'], array($cur_topic['id'], sef_friendly($cur_topic['subject']))),
-				'description'	=>	$cur_topic['message'],
+            'link'         => forum_link('viewtopic.php?pid=$1', array($cur_topic['id'])),
+            'description'  => $cur_topic['message'],
 				'author'		=>	array(
 					'name'			=> $cur_topic['poster']
 				),
