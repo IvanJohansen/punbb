@@ -7,12 +7,14 @@
  * @package PunBB
  */
 
-
 if (!defined('FORUM_ROOT'))
 	exit('The constant FORUM_ROOT must be defined and point to a valid PunBB installation root directory.');
 
 if (!defined('FORUM_ESSENTIALS_LOADED'))
 	require FORUM_ROOT.'include/essentials.php';
+
+// Disable warning: Deprecated: Function get_magic_quotes_gpc() is deprecated
+error_reporting(E_ALL & ~E_DEPRECATED);
 
 // Turn off magic_quotes_runtime
 if (get_magic_quotes_runtime())
